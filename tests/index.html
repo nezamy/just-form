@@ -1,0 +1,55 @@
+<form id="form" method="post">
+    <div>
+        <input type="file" id="files" name="file" accept="image/*, video/*" multiple>
+    </div><br>
+    <div>
+        Name :
+        <input type="text" name="name" placeholder="name">
+    </div><br>
+    <div>
+        Email :
+        <input type="email" name="email" placeholder="Email">
+    </div>
+
+    <button>upload</button>
+</form>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script src="/public/just.js"></script>
+<link rel="stylesheet" href="/public/just.css">
+<script>
+    Document.ready(function () {
+        let form = Just.form({
+            id: 'form',
+            ajax: true,
+            progress: true,
+        });
+
+        let file = form.upload({
+            name:'file',
+            max: 2,
+            thumbs: {
+                width: '200px',
+                height: '200px'
+            }
+        });
+
+        form.submit(function (e) {
+            e.preventDefault();
+            form.progressShow();
+
+            let xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+//                    console.log(this.responseText);
+
+                }else if(this.readyState == 4){
+                    form.errors(this);
+                }
+                form.progressHide();
+            };
+            xhttp.open("POST", "/", true);
+            xhttp.send(form.getData());
+        });
+
+    });
+</script>
